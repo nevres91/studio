@@ -19,12 +19,14 @@ import { Button } from "../ui/button";
 import { Home, Users, Swords, UsersRound, Settings, Bot } from "lucide-react"; // Added Bot for AI
 import { PuckPalLogo } from "./PuckPalLogo";
 import { AvatarFallback, Avatar, AvatarImage } from "../ui/avatar";
+import avatarImage from "../../lib/avatar.jpg";
+import puckImg from "../../lib/puck2.png";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: Home },
-  { href: "/players", label: "Players", icon: Users },
-  { href: "/matches", label: "Matches", icon: Swords },
-  { href: "/teams", label: "Teams & AI", icon: Bot },
+  { href: "/", label: "Početna", icon: Home },
+  { href: "/players", label: "Igrači", icon: Users },
+  { href: "/matches", label: "Mečevi", icon: Swords },
+  { href: "/teams", label: "Timovi", icon: Bot },
 ];
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -61,21 +63,24 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
+          <div>
+            <img src={puckImg.src} alt="" />
+          </div>
         </SidebarContent>
         <SidebarFooter className="p-4 border-t">
           {/* User Avatar or Settings */}
           <div className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
             <Avatar className="h-8 w-8">
               <AvatarImage
-                src="https://placehold.co/40x40.png"
+                src={avatarImage.src}
                 alt="User"
                 data-ai-hint="avatar person"
               />
               <AvatarFallback>PP</AvatarFallback>
             </Avatar>
             <div className="group-data-[collapsible=icon]:hidden">
-              <p className="text-sm font-medium">PuckPal User</p>
-              <p className="text-xs text-muted-foreground">Game On!</p>
+              <p className="text-sm font-medium">PuckPal</p>
+              <p className="text-xs text-muted-foreground">Neka Igra Počne</p>
             </div>
           </div>
         </SidebarFooter>

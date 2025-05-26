@@ -180,7 +180,8 @@ export function RecordMatchForm() {
         <AlertCircle className="h-5 w-5" />
         <p>
           Not enough players to form standard 2v3 teams. Please ensure there are
-          5 players available.
+          5 players available. Nema dovoljno igrača da se osnuju 2 vs 3 timovi.
+          Molim osigurajte da ima 5 dostupnih igrača.
         </p>
       </div>
     );
@@ -190,7 +191,7 @@ export function RecordMatchForm() {
     return (
       <div className="flex items-center gap-2 p-4 border-blue-500/50 bg-blue-500/10 rounded-md text-blue-700 dark:text-blue-300">
         <Users className="h-5 w-5" />
-        <p>Loading team matchups...</p>
+        <p>Učitavaju se novi parovi...</p>
       </div>
     );
   }
@@ -199,7 +200,7 @@ export function RecordMatchForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <Label htmlFor="date">Date</Label>
+          <Label htmlFor="date">Datum</Label>
           <Controller
             name="date"
             control={control}
@@ -217,7 +218,7 @@ export function RecordMatchForm() {
                     {field.value ? (
                       format(field.value, "PPP")
                     ) : (
-                      <span>Pick a date</span>
+                      <span>Izaberi Datum</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -240,14 +241,14 @@ export function RecordMatchForm() {
         </div>
 
         <div>
-          <Label htmlFor="matchup">Matchup (Team A vs Team B)</Label>
+          <Label htmlFor="matchup">Parovi (Tim A vs Tim B)</Label>
           <Controller
             name="selectedMatchupId"
             control={control}
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a matchup" />
+                  <SelectValue placeholder="Izaberi Parove" />
                 </SelectTrigger>
                 <SelectContent>
                   {availableMatchups.map((matchup) => (
@@ -273,7 +274,7 @@ export function RecordMatchForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
               <div>
                 <Label htmlFor="teamAScore">
-                  {selectedMatchup.teamA.name} Score
+                  {selectedMatchup.teamA.name} Skor
                 </Label>
                 <Controller
                   name="teamAScore"
@@ -305,7 +306,7 @@ export function RecordMatchForm() {
               </div>
               <div>
                 <Label htmlFor="teamBScore">
-                  {selectedMatchup.teamB.name} Score
+                  {selectedMatchup.teamB.name} Skor
                 </Label>
                 <Controller
                   name="teamBScore"
@@ -347,7 +348,7 @@ export function RecordMatchForm() {
 
       {allPlayersInMatch.length > 0 && (
         <div>
-          <h3 className="text-lg font-medium mb-2">Player Goals</h3>
+          <h3 className="text-lg font-medium mb-2">Golovi Igrača</h3>
           <ScrollArea className="h-[200px] rounded-md border p-4">
             <div className="space-y-4">
               {fields.map((item, index) => {
@@ -366,16 +367,6 @@ export function RecordMatchForm() {
                       name={`playerGoals.${index}.goals`}
                       control={control}
                       render={({ field }) => (
-                        // <Input
-                        //   type="number"
-                        //   min={0}
-                        //   max={MAX_SCORE}
-                        //   className="w-20"
-                        //   {...field}
-                        //   onChange={(e) =>
-                        //     field.onChange(parseInt(e.target.value) || 0)
-                        //   }
-                        // />
                         <NumberInput
                           value={field.value}
                           onChange={field.onChange}
@@ -400,7 +391,7 @@ export function RecordMatchForm() {
       )}
 
       <Button type="submit" size="lg" className="w-full md:w-auto">
-        Save Match
+        Snimi Meč
       </Button>
     </form>
   );

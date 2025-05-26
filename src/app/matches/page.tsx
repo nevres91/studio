@@ -18,19 +18,19 @@ export default function MatchesPage() {
       <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
         <TabsTrigger value="record">
           <Flame className="mr-2 h-4 w-4" />
-          Record Match
+          Snimi Meč
         </TabsTrigger>
         <TabsTrigger value="history">
           <History className="mr-2 h-4 w-4" />
-          Match History
+          Historija Mečeva
         </TabsTrigger>
       </TabsList>
       <TabsContent value="record">
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl">Record New Match</CardTitle>
+            <CardTitle className="text-2xl">Snimi Novi Meč</CardTitle>
             <CardDescription>
-              Log the details of your latest clusterPuck99 game.
+              Zapiši detalje novog ClusterPuck99 meča.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -41,9 +41,9 @@ export default function MatchesPage() {
       <TabsContent value="history">
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl">Match History</CardTitle>
+            <CardTitle className="text-2xl">Historija Meča</CardTitle>
             <CardDescription>
-              Browse through all previously recorded matches.
+              Pregledaj sve prethodno snimljene mečeve.
             </CardDescription>
           </CardHeader>
           <CardContent>

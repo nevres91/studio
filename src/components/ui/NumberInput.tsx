@@ -61,7 +61,7 @@ export function NumberInput({
         min={min}
         max={max}
         inputMode="none" // Prevents keyboard on mobile
-        className="w-full text-center"
+        className="w-full max-w-[200px] text-center"
         // Optional: readOnly to further prevent keyboard, but allows manual typing
         // readOnly
       />

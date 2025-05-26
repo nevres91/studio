@@ -13,6 +13,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
 import map from "../lib/map.jpg";
+import { format } from "date-fns";
 
 export default function DashboardPage() {
   const { players, matches } = usePuckPal();
@@ -27,15 +28,16 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-3xl">Welcome to PuckPal!</CardTitle>
+          <CardTitle className="text-3xl">Dobrodošli u PuckPal!</CardTitle>
           <CardDescription>
-            Your ultimate companion for clusterPuck99 scores and stats.
+            Tvoj najbolji prijatelj za vođenje statistike mečeva i golova u
+            ClusterPuck99
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p>
-            Ready to dive in? Record a new match, check out player stats, or get
-            AI-powered team suggestions.
+            Snimi novi meč, pogledaj statistiku svih igrača ili napravi timove
+            na osnovu statistike golova.
           </p>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Link href="/matches" passHref>
@@ -43,7 +45,7 @@ export default function DashboardPage() {
                 size="lg"
                 className="w-full shadow-md hover:shadow-lg transition-shadow"
               >
-                <Flame className="mr-2 h-5 w-5" /> Record New Match
+                <Flame className="mr-2 h-5 w-5" /> Snimi Novi Meč
               </Button>
             </Link>
             <Link href="/players" passHref>
@@ -52,7 +54,7 @@ export default function DashboardPage() {
                 size="lg"
                 className="w-full shadow-md hover:shadow-lg transition-shadow"
               >
-                <Users className="mr-2 h-5 w-5" /> View Player Stats
+                <Users className="mr-2 h-5 w-5" /> Pogledaj Statistiku Igrača
               </Button>
             </Link>
             <Link href="/teams" passHref>
@@ -61,7 +63,7 @@ export default function DashboardPage() {
                 size="lg"
                 className="w-full shadow-md hover:shadow-lg transition-shadow"
               >
-                <ListChecks className="mr-2 h-5 w-5" /> Suggest Teams (AI)
+                <ListChecks className="mr-2 h-5 w-5" /> Predloži Timove (AI)
               </Button>
             </Link>
           </div>
@@ -71,39 +73,37 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Players</CardTitle>
+            <CardTitle className="text-sm font-medium">Ukupno Igrača</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{players.length}</div>
-            <p className="text-xs text-muted-foreground">Currently tracking</p>
+            <p className="text-xs text-muted-foreground">Trenutno se prati</p>
           </CardContent>
         </Card>
         <Card className="shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Matches Played
+              Odigrani Mečevi
             </CardTitle>
             <ListChecks className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{matches.length}</div>
             <p className="text-xs text-muted-foreground">
-              Total games recorded
+              Ukupno Snimljenih Mečeva
             </p>
           </CardContent>
         </Card>
         <Card className="shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Goals Scored
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Ukupni Golovi</CardTitle>
             <BarChart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalGoalsScored}</div>
             <p className="text-xs text-muted-foreground">
-              Across all games and players
+              Od svih mečeva i svih igrača
             </p>
           </CardContent>
         </Card>
@@ -112,9 +112,9 @@ export default function DashboardPage() {
       {latestMatch && (
         <Card className="shadow-md">
           <CardHeader>
-            <CardTitle>Latest Match</CardTitle>
+            <CardTitle>Posljednji Meč</CardTitle>
             <CardDescription>
-              Recorded on {new Date(latestMatch.date).toLocaleDateString()}
+              Snimljeno {format(new Date(latestMatch.date), "dd.MM.yyyy")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-2">
@@ -152,7 +152,7 @@ export default function DashboardPage() {
       )}
       <Card className="shadow-md overflow-hidden">
         <CardHeader>
-          <CardTitle>Game Arena</CardTitle>
+          <CardTitle>Arena</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Image

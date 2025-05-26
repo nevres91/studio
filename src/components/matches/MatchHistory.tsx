@@ -104,8 +104,8 @@ export function MatchHistory() {
     } catch (error) {
       console.error("Error deleting match:", error);
       toast({
-        title: "Error Deleting Match",
-        description: "Could not delete the match. Please try again.",
+        title: "Greška u brisanju meča",
+        description: "Meč nije izbrisan. Pokušaj opet",
         variant: "destructive",
       });
     } finally {
@@ -116,7 +116,7 @@ export function MatchHistory() {
   if (matches.length === 0) {
     return (
       <p className="text-muted-foreground">
-        No matches recorded yet. Play some games and log them!
+        Nema snimljenih Mečeva. Odigraj nekoliko igara i zabavi se.
       </p>
     );
   }
@@ -127,7 +127,7 @@ export function MatchHistory() {
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <CardTitle className="text-xl flex items-center">
-              <Filter className="mr-2 h-5 w-5" /> Filters
+              <Filter className="mr-2 h-5 w-5" /> Filteri
             </CardTitle>
             {(filterDate || filterPlayerId) && (
               <Button
@@ -136,7 +136,7 @@ export function MatchHistory() {
                 onClick={clearFilters}
                 className="text-muted-foreground hover:text-primary"
               >
-                <X className="mr-1 h-4 w-4" /> Clear Filters
+                <X className="mr-1 h-4 w-4" /> Očisti Filtere
               </Button>
             )}
           </div>
@@ -144,7 +144,7 @@ export function MatchHistory() {
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="filter-date" className="text-sm font-medium">
-              Date
+              Datum
             </label>
             <Input
               id="filter-date"
@@ -159,7 +159,7 @@ export function MatchHistory() {
           </div>
           <div>
             <label htmlFor="filter-player" className="text-sm font-medium">
-              Player
+              Igrač
             </label>
             <Select
               value={filterPlayerId}
@@ -169,10 +169,10 @@ export function MatchHistory() {
               }}
             >
               <SelectTrigger className="mt-1">
-                <SelectValue placeholder="All Players" />
+                <SelectValue placeholder="Svi Igrači" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Players</SelectItem>
+                <SelectItem value="all">Svi Igrači</SelectItem>
                 {players.map((player) => (
                   <SelectItem key={player.id} value={player.id}>
                     {player.name}
@@ -218,7 +218,7 @@ export function MatchHistory() {
                       className="text-destructive hover:text-destructive/80 h-8 w-8"
                     >
                       <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete match</span>
+                      <span className="sr-only">Izbriši Meč</span>
                     </Button>
                   </div>
                 </div>
@@ -227,11 +227,11 @@ export function MatchHistory() {
                 <div className="text-sm">
                   <p className="flex items-center font-semibold mb-2">
                     <Award className="h-4 w-4 mr-2 text-yellow-500" />
-                    Winner:{" "}
+                    <span className="text-yellow-600">Pobjednik: </span>{" "}
                     {match.winningTeamIds.map(getPlayerName).join(" & ")}
                   </p>
                   <h4 className="font-medium mb-1 text-muted-foreground">
-                    Goals per player:
+                    Golovi po igraču:
                   </h4>
                   <ul className="list-disc list-inside space-y-0.5 pl-1">
                     {match.playerGoals
@@ -240,13 +240,13 @@ export function MatchHistory() {
                         <li key={pg.playerId}>
                           {getPlayerName(pg.playerId)}:{" "}
                           <span className="font-semibold">{pg.goals}</span>{" "}
-                          goal(s)
                         </li>
                       ))}
                     {match.playerGoals.filter((pg) => pg.goals > 0).length ===
                       0 && (
                       <li>
-                        No specific goals recorded for players in this match.
+                        Nema specifičnih golova snimljenih za igrače u ovom
+                        meču.
                       </li>
                     )}
                   </ul>
@@ -257,7 +257,7 @@ export function MatchHistory() {
         </div>
       ) : (
         <p className="text-center text-muted-foreground py-8">
-          No matches found for the selected filters.
+          Nema pronađenih mečeva za odabrane filtere
         </p>
       )}
 
@@ -269,10 +269,10 @@ export function MatchHistory() {
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
           >
-            Previous
+            Predhodni
           </Button>
           <span className="text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
+            Strana {currentPage} of {totalPages}
           </span>
           <Button
             variant="outline"
@@ -280,7 +280,7 @@ export function MatchHistory() {
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
           >
-            Next
+            Sledeći
           </Button>
         </div>
       )}
@@ -292,9 +292,8 @@ export function MatchHistory() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              match and recalculate all player statistics based on the remaining
-              matches.
+              Ovo će zauvijek izbrisati odabrani meč i preračunati statistiku
+              igrača na osnovu preostalih mečeva.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -302,7 +301,7 @@ export function MatchHistory() {
               onClick={() => setMatchToDeleteId(null)}
               disabled={isDeleting}
             >
-              Cancel
+              Odustani
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDeleteMatch}
@@ -312,7 +311,7 @@ export function MatchHistory() {
               {isDeleting ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
-              Delete Match
+              Izbriši Meč
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

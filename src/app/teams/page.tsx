@@ -2,7 +2,13 @@
 
 import { SuggestTeams } from "@/components/teams/SuggestTeams";
 import { TeamCombinationsStats } from "@/components/teams/TeamCombinationsStats";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, BarChartBig } from "lucide-react";
 
@@ -12,18 +18,21 @@ export default function TeamsPage() {
       <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
         <TabsTrigger value="suggest">
           <Bot className="mr-2 h-4 w-4" />
-          Suggest Teams (AI)
+          Preporuči Tim (AI)
         </TabsTrigger>
         <TabsTrigger value="stats">
           <BarChartBig className="mr-2 h-4 w-4" />
-          Team Stats
+          Statistika Timova
         </TabsTrigger>
       </TabsList>
       <TabsContent value="suggest">
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl">AI Team Suggester</CardTitle>
-            <CardDescription>Get AI-powered suggestions for balanced teams based on player performance.</CardDescription>
+            <CardTitle className="text-2xl">AI Generator Timova</CardTitle>
+            <CardDescription>
+              Pomoću umjetne inteligencije kreiraj preporuke za balansirane
+              timove na osnovu performansi igrača.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <SuggestTeams />
@@ -33,8 +42,12 @@ export default function TeamsPage() {
       <TabsContent value="stats">
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl">Team Combination Statistics</CardTitle>
-            <CardDescription>Performance of all possible 2v3 team matchups.</CardDescription>
+            <CardTitle className="text-2xl">
+              Statistika Kombinacije Timova
+            </CardTitle>
+            <CardDescription>
+              Performanse svih mogućih 2v3 mečeva
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <TeamCombinationsStats />
