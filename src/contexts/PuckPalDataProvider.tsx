@@ -9,11 +9,7 @@ import React, {
 } from "react";
 import type { Player, Match, PlayerGoal, GeneratedMatchup } from "@/lib/types";
 import { INITIAL_PLAYER_NAMES } from "@/lib/config";
-import {
-  generateId,
-  generate2v3Matchups,
-  calculateWinLossRatio,
-} from "@/lib/utils";
+import { generate2v3Matchups, calculateWinLossRatio } from "@/lib/utils";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -23,8 +19,8 @@ import {
   writeBatch,
   query,
   orderBy,
-  serverTimestamp,
   Timestamp,
+  deleteDoc,
 } from "firebase/firestore";
 
 interface PuckPalContextType {
@@ -38,6 +34,7 @@ interface PuckPalContextType {
     teamBScore: number,
     playerGoals: PlayerGoal[]
   ) => Promise<void>; // Make async
+  deleteMatch: (matchId: string) => Promise<void>;
   getGeneratedMatchups: () => GeneratedMatchup[];
   getPlayerById: (id: string) => Player | undefined;
   isInitialized: boolean; // Expose initialization status
@@ -245,6 +242,54 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({
     [matches, players, updatePlayerStatsInFirestore]
   );
 
+  const deleteMatch = useCallback(
+    async (matchId: string) => {
+      console.log(
+        `[PuckPalDataProvider] deleteMatch: START for matchId: ${matchId}`
+      );
+      if (!db) {
+        console.error(
+          "[PuckPalDataProvider] deleteMatch: Firestore 'db' instance is not available. Match not deleted."
+        );
+        throw new Error("Database not available.");
+      }
+
+      try {
+        const matchDocRef = doc(db, "matches", matchId);
+        await deleteDoc(matchDocRef),
+          new Error(`Timeout deleting match ${matchId} from Firestore`);
+        console.log(
+          `[PuckPalDataProvider] deleteMatch: Match ${matchId} deleted from Firestore.`
+        );
+
+        const updatedMatchesList = matches.filter((m) => m.id !== matchId);
+        setMatches(updatedMatchesList);
+        console.log(
+          `[PuckPalDataProvider] deleteMatch: Local matches state updated. ${updatedMatchesList.length} matches remaining.`
+        );
+
+        console.log(
+          "[PuckPalDataProvider] deleteMatch: Recalculating player stats after deleting match..."
+        );
+        // Important: Pass a fresh copy of players array to avoid stale closures if updatePlayerStatsInFirestore uses it directly
+        const currentPlayersState = [...players];
+        const statsUpdatedPlayers = await updatePlayerStatsInFirestore(
+          currentPlayersState,
+          updatedMatchesList
+        );
+        setPlayers(statsUpdatedPlayers);
+        console.log("[PuckPalDataProvider] deleteMatch: Player stats updated.");
+      } catch (error) {
+        console.error(
+          `[PuckPalDataProvider] deleteMatch: Error deleting match ${matchId} or updating stats:`,
+          error
+        );
+        throw error; // Re-throw to allow UI to handle it
+      }
+    },
+    [matches, players, updatePlayerStatsInFirestore]
+  );
+
   const getGeneratedMatchups = useCallback((): GeneratedMatchup[] => {
     if (!isInitialized || players.length !== 5) return [];
     const rawMatchups = generate2v3Matchups(players);
@@ -274,6 +319,7 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({
     players,
     matches,
     addMatch,
+    deleteMatch,
     getGeneratedMatchups,
     getPlayerById,
     isInitialized,

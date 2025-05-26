@@ -1,15 +1,13 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { usePuckPal } from "@/contexts/PuckPalDataProvider";
-import type { Match } from "@/lib/types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,21 +20,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format } from "date-fns";
-import { CalendarDays, Users, Award, Filter, X } from "lucide-react";
-import { enUS } from "date-fns/locale";
+import { CalendarDays, Award, Filter, X, Trash2, Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 const ITEMS_PER_PAGE = 5;
 
 export function MatchHistory() {
-  const { matches, players, getPlayerById } = usePuckPal();
+  const { matches, players, getPlayerById, deleteMatch } = usePuckPal();
+  const { toast } = useToast();
   const [filterDate, setFilterDate] = useState<string>("");
   const [filterPlayerId, setFilterPlayerId] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const [matchToDeleteId, setMatchToDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const getPlayerName = (id: string) =>
     getPlayerById(id)?.name || "Unknown Player";
@@ -73,6 +80,37 @@ export function MatchHistory() {
     setFilterDate("");
     setFilterPlayerId("all");
     setCurrentPage(1);
+  };
+
+  const handleDeleteClick = (matchId: string) => {
+    setMatchToDeleteId(matchId);
+  };
+
+  const confirmDeleteMatch = async () => {
+    if (!matchToDeleteId) return;
+    setIsDeleting(true);
+    try {
+      await deleteMatch(matchToDeleteId);
+      toast({
+        title: "Match Deleted",
+        description:
+          "The match has been successfully deleted and player stats updated.",
+      });
+      setMatchToDeleteId(null); // Close dialog by resetting the ID
+      // If current page becomes empty after deletion, go to previous page
+      if (paginatedMatches.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+    } catch (error) {
+      console.error("Error deleting match:", error);
+      toast({
+        title: "Error Deleting Match",
+        description: "Could not delete the match. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (matches.length === 0) {
@@ -162,14 +200,27 @@ export function MatchHistory() {
                       {format(new Date(match.date), "PPP")}
                     </CardDescription>
                   </div>
-                  <Badge
-                    variant={
-                      match.winningTeamIds.length > 0 ? "default" : "secondary"
-                    }
-                    className="shrink-0"
-                  >
-                    {match.teamA.score} - {match.teamB.score}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={
+                        match.winningTeamIds.length > 0
+                          ? "default"
+                          : "secondary"
+                      }
+                      className="shrink-0"
+                    >
+                      {match.teamA.score} - {match.teamB.score}
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteClick(match.id)}
+                      className="text-destructive hover:text-destructive/80 h-8 w-8"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Delete match</span>
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -233,6 +284,39 @@ export function MatchHistory() {
           </Button>
         </div>
       )}
+      <AlertDialog
+        open={!!matchToDeleteId}
+        onOpenChange={(open) => !open && setMatchToDeleteId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              match and recalculate all player statistics based on the remaining
+              matches.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => setMatchToDeleteId(null)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteMatch}
+              disabled={isDeleting}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Delete Match
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
