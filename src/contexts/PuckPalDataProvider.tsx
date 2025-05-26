@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
@@ -28,12 +29,13 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [matches, setMatches] = useLocalStorage<Match[]>(LOCAL_STORAGE_KEYS.MATCHES, []);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // This effect handles the one-time initialization of default players if they don't exist in localStorage.
   useEffect(() => {
-    // Initialize players only if the list is empty and not already initialized.
-    // This check ensures it happens once after localStorage has been read.
+    // Only run on client and if players array (from useLocalStorage, after its own effect runs) is empty,
+    // and the initialization flag is not set.
     if (typeof window !== 'undefined' && players.length === 0 && !localStorage.getItem(LOCAL_STORAGE_KEYS.PLAYERS + '_initialized')) {
-        const initialPlayers = INITIAL_PLAYER_NAMES.map(name => ({
-        id: generateId(),
+        const defaultPlayers = INITIAL_PLAYER_NAMES.map(name => ({
+        id: name, // Use name as ID for deterministic initial state, matching the SSR fallback
         name,
         totalGoals: 0,
         wins: 0,
@@ -41,11 +43,17 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
         gamesPlayed: 0,
         winLossRatio: 0,
       }));
-      setPlayers(initialPlayers);
+      setPlayers(defaultPlayers); // This updates the 'players' state from useLocalStorage
       localStorage.setItem(LOCAL_STORAGE_KEYS.PLAYERS + '_initialized', 'true');
     }
+  }, [players, setPlayers]); // Runs when `players` (from useLocalStorage's perspective) changes.
+
+  // This effect marks the provider as "initialized" after the first client-side mount.
+  // This allows `useLocalStorage` to attempt loading data and the player initialization effect to run
+  // before `isInitialized` becomes true and the context switches from fallback to live data.
+  useEffect(() => {
     setIsInitialized(true);
-  }, [players, setPlayers]);
+  }, []); // Runs once on the client after mount.
 
 
   const updatePlayerStats = useCallback((currentPlayers: Player[], updatedMatches: Match[]): Player[] => {
@@ -85,11 +93,13 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
     
     return currentPlayers.map(p => {
         const newStats = statsMap[p.id];
-        const gamesPlayed = newStats.wins + newStats.losses; // Assuming gamesPlayed is wins + losses
+        // gamesPlayed should be directly incremented, not just sum of wins/losses if draws were possible (not in this app)
+        // For this app, gamesPlayed = wins + losses is fine as each game has a winner/loser.
+        const gamesPlayed = newStats.gamesPlayed; // Use the incremented gamesPlayed
         return {
             ...p,
             ...newStats,
-            gamesPlayed: gamesPlayed, // Corrected gamesPlayed
+            gamesPlayed: gamesPlayed,
             winLossRatio: calculateWinLossRatio(newStats.wins, gamesPlayed),
         };
     });
@@ -108,7 +118,7 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const winningTeamIds = teamAScore > teamBScore ? teamAPlayerIds : teamBPlayerIds;
 
     const newMatch: Match = {
-      id: generateId(),
+      id: generateId(), // generateId() is fine for new matches added client-side
       date: date.toISOString(),
       teamA: { playerIds: teamAPlayerIds, score: teamAScore },
       teamB: { playerIds: teamBPlayerIds, score: teamBScore },
@@ -119,7 +129,6 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const updatedMatches = [...matches, newMatch];
     setMatches(updatedMatches);
     
-    // Recalculate player stats after adding a match
     setPlayers(prevPlayers => updatePlayerStats(prevPlayers, updatedMatches));
 
   }, [matches, setMatches, setPlayers, updatePlayerStats]);
@@ -139,7 +148,9 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [players]);
   
   const contextValue = {
-    players: isInitialized ? players : INITIAL_PLAYER_NAMES.map(name => ({ id: name, name, totalGoals:0, wins:0, losses:0, gamesPlayed:0, winLossRatio:0 })), // Provide initial structure during SSR/first load
+    // On server and initial client render, `isInitialized` is false, providing a stable fallback.
+    // After client-side effects run and `isInitialized` becomes true, `players` state (from localStorage or default init) is used.
+    players: isInitialized ? players : INITIAL_PLAYER_NAMES.map(name => ({ id: name, name, totalGoals:0, wins:0, losses:0, gamesPlayed:0, winLossRatio:0 })),
     matches,
     addMatch,
     getGeneratedMatchups,
