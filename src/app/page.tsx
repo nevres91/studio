@@ -12,6 +12,7 @@ import { BarChart, Flame, ListChecks, Users } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
+import map from "../lib/map.jpg";
 
 export default function DashboardPage() {
   const { players, matches } = usePuckPal();
@@ -116,11 +117,11 @@ export default function DashboardPage() {
               Recorded on {new Date(latestMatch.date).toLocaleDateString()}
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-2">
             <div className="flex justify-between items-center">
-              <div>
-                <p className="font-semibold">
-                  Team A:{" "}
+              <div className="bg-red-200 rounded-xl p-1 w-[50%] flex flex-col items-center min-h-[110px] justify-center">
+                <span className="text-center font-bold">Tim A: </span>
+                <p className="font-semibold text-center text-red-600">
                   {latestMatch.teamA.playerIds
                     .map((id: any) => players.find((p) => p.id === id)?.name)
                     .join(", ")}
@@ -128,9 +129,9 @@ export default function DashboardPage() {
                 <p>Score: {latestMatch.teamA.score}</p>
               </div>
               <div className="text-xl font-bold mx-4">VS</div>
-              <div>
-                <p className="font-semibold">
-                  Team B:{" "}
+              <div className="bg-blue-200 rounded-xl p-1  w-[50%] flex flex-col items-center min-h-[110px] justify-center">
+                <span className="text-center font-bold">Tim B: </span>
+                <p className="font-semibold text-center text-blue-600">
                   {latestMatch.teamB.playerIds
                     .map((id: any) => players.find((p) => p.id === id)?.name)
                     .join(", ")}
@@ -139,12 +140,12 @@ export default function DashboardPage() {
               </div>
             </div>
             <p className="mt-2">
-              Winner:{" "}
+              <span className="font-bold  p-1">Pobjednik: </span>
               {latestMatch.winningTeamIds.includes(
                 latestMatch.teamA.playerIds[0]
               )
-                ? "Team A"
-                : "Team B"}
+                ? "Tim A"
+                : "Tim B"}
             </p>
           </CardContent>
         </Card>
@@ -155,11 +156,11 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent className="p-0">
           <Image
-            src="https://placehold.co/800x400.png"
+            src={map}
             alt="Hockey rink"
             width={800}
             height={400}
-            className="w-full h-auto object-cover"
+            className="w-full h-auto object-fit"
             data-ai-hint="hockey rink"
           />
         </CardContent>

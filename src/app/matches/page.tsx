@@ -2,7 +2,13 @@
 
 import { RecordMatchForm } from "@/components/matches/RecordMatchForm";
 import { MatchHistory } from "@/components/matches/MatchHistory";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Flame, History } from "lucide-react";
 
@@ -23,7 +29,9 @@ export default function MatchesPage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl">Record New Match</CardTitle>
-            <CardDescription>Log the details of your latest clusterPuck99 game.</CardDescription>
+            <CardDescription>
+              Log the details of your latest clusterPuck99 game.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <RecordMatchForm />
@@ -34,7 +42,9 @@ export default function MatchesPage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl">Match History</CardTitle>
-            <CardDescription>Browse through all previously recorded matches.</CardDescription>
+            <CardDescription>
+              Browse through all previously recorded matches.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <MatchHistory />

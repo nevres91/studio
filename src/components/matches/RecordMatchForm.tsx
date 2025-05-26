@@ -28,6 +28,7 @@ import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
 import { Card, CardContent } from "../ui/card";
+import { NumberInput } from "../ui/NumberInput";
 
 const MAX_SCORE = 10;
 
@@ -278,14 +279,21 @@ export function RecordMatchForm() {
                   name="teamAScore"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      type="number"
+                    // <Input
+                    //   type="number"
+                    //   min={0}
+                    //   max={MAX_SCORE}
+                    //   {...field}
+                    //   onChange={(e) =>
+                    //     field.onChange(parseInt(e.target.value) || 0)
+                    //   }
+                    // />
+                    <NumberInput
+                      value={field.value}
+                      onChange={field.onChange}
                       min={0}
                       max={MAX_SCORE}
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(parseInt(e.target.value) || 0)
-                      }
+                      className="mt-1"
                     />
                   )}
                 />
@@ -303,14 +311,21 @@ export function RecordMatchForm() {
                   name="teamBScore"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      type="number"
+                    //     <Input
+                    //       type="number"
+                    //       min={0}
+                    //       max={MAX_SCORE}
+                    //       {...field}
+                    //       onChange={(e) =>
+                    //         field.onChange(parseInt(e.target.value) || 0)
+                    //       }
+                    //     />
+                    <NumberInput
+                      value={field.value}
+                      onChange={field.onChange}
                       min={0}
                       max={MAX_SCORE}
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(parseInt(e.target.value) || 0)
-                      }
+                      className="mt-1"
                     />
                   )}
                 />
@@ -351,15 +366,22 @@ export function RecordMatchForm() {
                       name={`playerGoals.${index}.goals`}
                       control={control}
                       render={({ field }) => (
-                        <Input
-                          type="number"
+                        // <Input
+                        //   type="number"
+                        //   min={0}
+                        //   max={MAX_SCORE}
+                        //   className="w-20"
+                        //   {...field}
+                        //   onChange={(e) =>
+                        //     field.onChange(parseInt(e.target.value) || 0)
+                        //   }
+                        // />
+                        <NumberInput
+                          value={field.value}
+                          onChange={field.onChange}
                           min={0}
                           max={MAX_SCORE}
-                          className="w-20"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value) || 0)
-                          }
+                          className="mt-1"
                         />
                       )}
                     />

@@ -89,7 +89,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </h1>
           {/* Add any header actions here, e.g., theme toggle, notifications */}
         </header>
-        <main className="flex-1 p-6 overflow-auto">{children}</main>
+        <main className="flex-1 p-2  sm:p-6 overflow-auto">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
