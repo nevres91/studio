@@ -280,6 +280,8 @@ export function RecordMatchForm() {
                   render={({ field }) => (
                     <Input
                       type="number"
+                      min={0}
+                      max={MAX_SCORE}
                       {...field}
                       onChange={(e) =>
                         field.onChange(parseInt(e.target.value) || 0)
@@ -303,6 +305,8 @@ export function RecordMatchForm() {
                   render={({ field }) => (
                     <Input
                       type="number"
+                      min={0}
+                      max={MAX_SCORE}
                       {...field}
                       onChange={(e) =>
                         field.onChange(parseInt(e.target.value) || 0)
@@ -349,6 +353,8 @@ export function RecordMatchForm() {
                       render={({ field }) => (
                         <Input
                           type="number"
+                          min={0}
+                          max={MAX_SCORE}
                           className="w-20"
                           {...field}
                           onChange={(e) =>
