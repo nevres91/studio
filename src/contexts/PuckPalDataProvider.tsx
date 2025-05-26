@@ -2,7 +2,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type { Player, Match, PlayerGoal, MatchTeamDetails, GeneratedMatchup } from '@/lib/types';
+import type { Player, Match, PlayerGoal, GeneratedMatchup } from '@/lib/types';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { INITIAL_PLAYER_NAMES, LOCAL_STORAGE_KEYS } from '@/lib/config';
 import { generateId, generate2v3Matchups, calculateWinLossRatio } from '@/lib/utils';
@@ -24,34 +24,25 @@ interface PuckPalContextType {
 
 const PuckPalContext = createContext<PuckPalContextType | undefined>(undefined);
 
+// Define default players structure once, outside the component, so it's a stable reference for initialValue.
+const defaultInitialPlayers: Player[] = INITIAL_PLAYER_NAMES.map(name => ({
+  id: name, // Use name as ID for deterministic initial state
+  name,
+  totalGoals: 0,
+  wins: 0,
+  losses: 0,
+  gamesPlayed: 0,
+  winLossRatio: 0,
+}));
+
 export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [players, setPlayers] = useLocalStorage<Player[]>(LOCAL_STORAGE_KEYS.PLAYERS, []);
+  const [players, setPlayers] = useLocalStorage<Player[]>(LOCAL_STORAGE_KEYS.PLAYERS, defaultInitialPlayers);
   const [matches, setMatches] = useLocalStorage<Match[]>(LOCAL_STORAGE_KEYS.MATCHES, []);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // This effect handles the one-time initialization of default players if they don't exist in localStorage.
   useEffect(() => {
-    // Only run on client and if players array (from useLocalStorage, after its own effect runs) is empty,
-    // and the initialization flag is not set.
-    if (typeof window !== 'undefined' && players.length === 0 && !localStorage.getItem(LOCAL_STORAGE_KEYS.PLAYERS + '_initialized')) {
-        const defaultPlayers = INITIAL_PLAYER_NAMES.map(name => ({
-        id: name, // Use name as ID for deterministic initial state, matching the SSR fallback
-        name,
-        totalGoals: 0,
-        wins: 0,
-        losses: 0,
-        gamesPlayed: 0,
-        winLossRatio: 0,
-      }));
-      setPlayers(defaultPlayers); // This updates the 'players' state from useLocalStorage
-      localStorage.setItem(LOCAL_STORAGE_KEYS.PLAYERS + '_initialized', 'true');
-    }
-  }, [players, setPlayers]); // Runs when `players` (from useLocalStorage's perspective) changes.
-
-  // This effect marks the provider as "initialized" after the first client-side mount.
-  // This allows `useLocalStorage` to attempt loading data and the player initialization effect to run
-  // before `isInitialized` becomes true and the context switches from fallback to live data.
-  useEffect(() => {
+    // This effect marks that the client has hydrated and useLocalStorage
+    // has had a chance to load initial data or use the default.
     setIsInitialized(true);
   }, []); // Runs once on the client after mount.
 
@@ -93,9 +84,7 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
     
     return currentPlayers.map(p => {
         const newStats = statsMap[p.id];
-        // gamesPlayed should be directly incremented, not just sum of wins/losses if draws were possible (not in this app)
-        // For this app, gamesPlayed = wins + losses is fine as each game has a winner/loser.
-        const gamesPlayed = newStats.gamesPlayed; // Use the incremented gamesPlayed
+        const gamesPlayed = newStats.gamesPlayed; 
         return {
             ...p,
             ...newStats,
@@ -118,7 +107,7 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const winningTeamIds = teamAScore > teamBScore ? teamAPlayerIds : teamBPlayerIds;
 
     const newMatch: Match = {
-      id: generateId(), // generateId() is fine for new matches added client-side
+      id: generateId(), 
       date: date.toISOString(),
       teamA: { playerIds: teamAPlayerIds, score: teamAScore },
       teamB: { playerIds: teamBPlayerIds, score: teamBScore },
@@ -144,13 +133,13 @@ export const PuckPalDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [players, isInitialized]);
 
   const getPlayerById = useCallback((id: string): Player | undefined => {
-    return players.find(p => p.id === id);
-  }, [players]);
+    // Use defaultInitialPlayers as fallback if not yet initialized on client, to match SSR behavior
+    const sourcePlayers = isInitialized ? players : defaultInitialPlayers;
+    return sourcePlayers.find(p => p.id === id);
+  }, [players, isInitialized]);
   
   const contextValue = {
-    // On server and initial client render, `isInitialized` is false, providing a stable fallback.
-    // After client-side effects run and `isInitialized` becomes true, `players` state (from localStorage or default init) is used.
-    players: isInitialized ? players : INITIAL_PLAYER_NAMES.map(name => ({ id: name, name, totalGoals:0, wins:0, losses:0, gamesPlayed:0, winLossRatio:0 })),
+    players: isInitialized ? players : defaultInitialPlayers,
     matches,
     addMatch,
     getGeneratedMatchups,
@@ -171,3 +160,4 @@ export const usePuckPal = (): PuckPalContextType => {
   }
   return context;
 };
+
