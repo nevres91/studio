@@ -110,7 +110,7 @@ export default function TournamentPage() {
     defaultValues: {
       playerNames: [],
       tournamentType: "round-robin-league",
-      scoringSystem: "Winner: 2 points, Loser: 1 point",
+      scoringSystem: "Pobjednik: 2 poena, Gubitnik: 1 poen",
     },
   });
 
@@ -140,7 +140,7 @@ export default function TournamentPage() {
         description = error.message;
       }
       toast({
-        title: "Error Loading Tournament",
+        title: "Greška u učitavanju Turnira",
         description,
         variant: "destructive",
       });
@@ -158,8 +158,8 @@ export default function TournamentPage() {
       append("");
     } else {
       toast({
-        title: "Max players reached",
-        description: "You can add up to 16 players.",
+        title: "Max broj igrača dostignut.",
+        description: "Možete dodati do 16 igrača.",
         variant: "destructive",
       });
     }
@@ -168,8 +168,8 @@ export default function TournamentPage() {
   const handlePopulateFromExisting = () => {
     if (!puckPalInitialized) {
       toast({
-        title: "Player data not loaded yet.",
-        description: "Please wait a moment and try again.",
+        title: "Podatci o igraču nisu još učitani.",
+        description: "Molimo sačekajte momenat i pokušajte ponovo.",
         variant: "destructive",
       });
       return;
@@ -177,11 +177,11 @@ export default function TournamentPage() {
     const currentPlayersNames = allAppPlayers.map((p) => p.name);
     replace(currentPlayersNames.slice(0, 16));
     toast({
-      title: "Players Populated",
-      description: `Populated with ${Math.min(
+      title: "Igrači Popunjeni",
+      description: `Popunjeno sa ${Math.min(
         currentPlayersNames.length,
         16
-      )} existing players.`,
+      )} postojećih igrača`,
     });
   };
 
@@ -190,7 +190,7 @@ export default function TournamentPage() {
     reset({
       playerNames: [],
       tournamentType: "round-robin-league",
-      scoringSystem: "Winner: 2 points, Loser: 1 point",
+      scoringSystem: "Pobjednik: 2 poena, Gubitnik: 1 poen",
     });
   };
 
@@ -205,8 +205,8 @@ export default function TournamentPage() {
       if (newlyCreatedTournament) {
         setActiveTournament(newlyCreatedTournament);
         toast({
-          title: "Tournament Generated & Saved!",
-          description: `AI has designed "${newlyCreatedTournament.tournamentName}".`,
+          title: "Turnir Generisan i Snimljen.",
+          description: `Umjetna inteligencija je dizajnirala "${newlyCreatedTournament.tournamentName}".`,
         });
       } else {
         throw new Error(
@@ -244,7 +244,7 @@ export default function TournamentPage() {
       const description = `Tournament is completed. Results cannot be changed. Match: "${
         matchItem.match
       }", current winner: ${matchItem.winner || "None"}.`;
-      toast({ title: "Match Information", description, variant: "default" });
+      toast({ title: "Informacije o Meču", description, variant: "default" });
       console.log("Dialog not opened. Reason:", description);
     }
   };
@@ -265,9 +265,9 @@ export default function TournamentPage() {
       !allMatchesCompleted
     ) {
       toast({
-        title: "Cannot Finalize",
+        title: "Nemoguće Završiti",
         description:
-          "All matches must have a recorded winner before finalizing.",
+          "Svi mečevi moraju imati pobjednika da bi se turnir završio.",
         variant: "destructive",
       });
       setIsFinalizeDialogOpen(false);
@@ -278,18 +278,18 @@ export default function TournamentPage() {
       const finalizedTournament = await finalizeTournament(activeTournament.id);
       setActiveTournament(finalizedTournament);
       toast({
-        title: "Tournament Finalized!",
-        description: `"${finalizedTournament.tournamentName}" has been marked as completed.`,
+        title: "Turnir Završen!",
+        description: `"${finalizedTournament.tournamentName}" je označen kao završen.`,
       });
       setIsFinalizeDialogOpen(false);
     } catch (error) {
       console.error("Error finalizing tournament:", error);
       toast({
-        title: "Error Finalizing",
+        title: "Greška u Završetku",
         description:
           error instanceof Error && error.message
             ? error.message
-            : "Could not finalize tournament.",
+            : "Turnir nije uspješno završen",
         variant: "destructive",
       });
     } finally {
@@ -315,7 +315,7 @@ export default function TournamentPage() {
       <div className="flex justify-center items-center p-8 min-h-[300px]">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
         <p className="ml-4 text-xl text-muted-foreground">
-          Loading Tournament Data...
+          Učitavanje turnira...
         </p>
       </div>
     );
@@ -326,7 +326,7 @@ export default function TournamentPage() {
       <div className="space-y-6">
         <Card className="shadow-xl animate-in fade-in duration-500">
           <CardHeader>
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start flex-col md:flex-row space-y-3 md:space-y-0">
               <CardTitle className="text-2xl flex items-center">
                 <Trophy className="mr-2 h-7 w-7 text-primary" />
                 {activeTournament.tournamentName}
@@ -338,9 +338,9 @@ export default function TournamentPage() {
                     onClick={() => {
                       if (!allMatchesCompleted) {
                         toast({
-                          title: "Cannot Finalize",
+                          title: "Nemoguće Završiti",
                           description:
-                            "All matches must have a recorded winner.",
+                            "Svi mečevi moraju imati snimljenog pobjednika.",
                           variant: "destructive",
                         });
                         return;
@@ -351,11 +351,11 @@ export default function TournamentPage() {
                     disabled={isLoadingTournament || !allMatchesCompleted}
                     title={
                       !allMatchesCompleted
-                        ? "All matches must have a winner to finalize"
-                        : "Finalize Tournament"
+                        ? "Svi mečevi moraju imati pobjednika da bi se turnir završio"
+                        : "Završi turnir"
                     }
                   >
-                    <ShieldCheck className="mr-2 h-4 w-4" /> Finalize Tournament
+                    <ShieldCheck className="mr-2 h-4 w-4" /> Završi Turnir
                   </Button>
                 )}
                 <Button
@@ -364,28 +364,28 @@ export default function TournamentPage() {
                   size="sm"
                   disabled={isLoadingAi || isLoadingTournament}
                 >
-                  <FilePlus className="mr-2 h-4 w-4" /> Create New
+                  <FilePlus className="mr-2 h-4 w-4" /> Kreiraj Novi
                 </Button>
               </div>
             </div>
             <CardDescription>{activeTournament.description}</CardDescription>
             <div className="text-xs text-muted-foreground pt-2 space-y-0.5">
               <p>
-                Type:{" "}
+                Tip:{" "}
                 <span className="font-medium">
                   {activeTournament.tournamentType === "round-robin-league"
-                    ? "Round-Robin League"
-                    : "Single-Elimination Bracket"}
+                    ? "Round-Robin Liga"
+                    : "Pojedinačna Eliminacija"}
                 </span>
               </p>
               <p>
-                Scoring:{" "}
+                Bodovi:{" "}
                 <span className="font-medium">
                   {activeTournament.scoringSystem}
                 </span>
               </p>
               <p>
-                Players:{" "}
+                Igrači:{" "}
                 <span className="font-medium">
                   {Array.isArray(activeTournament.playerNames)
                     ? activeTournament.playerNames.join(", ")
@@ -397,7 +397,7 @@ export default function TournamentPage() {
                 <span className="capitalize font-medium">
                   {activeTournament.overallStatus}
                 </span>{" "}
-                (Created:{" "}
+                (Kreiran:{" "}
                 {activeTournament.createdAt
                   ? format(activeTournament.createdAt.toDate(), "PPP p")
                   : "N/A"}
@@ -405,11 +405,11 @@ export default function TournamentPage() {
               </p>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 px-1.5 sm:px-6">
             <div>
               <h4 className="font-semibold text-lg mb-2 flex items-center">
                 <ListChecks className="mr-2 h-5 w-5 text-primary/80" />
-                Schedule / Matches
+                Raspored / Mečevi
               </h4>
               {activeTournament.schedule &&
               activeTournament.schedule.length > 0 ? (
@@ -435,34 +435,35 @@ export default function TournamentPage() {
                               : "text-foreground"
                           }`}
                         >
-                          {item.round ? `Round ${item.round} - ` : ``}Match:
+                          {item.round ? `Runda ${item.round} - ` : ``}Meč:
                         </p>
                         {item.status === "completed" && item.winner && (
                           <span className="text-xs font-semibold text-green-600 flex items-center">
-                            <CheckCircle2 className="h-3 w-3 mr-1" /> Winner:{" "}
+                            <CheckCircle2 className="h-3 w-3 mr-1" /> Pobjednik:{" "}
                             {item.winner}
                           </span>
                         )}
                         {item.status === "pending" &&
                           activeTournament.overallStatus !== "completed" && (
                             <span className="text-xs text-amber-600 flex items-center">
-                              <HelpCircle className="h-3 w-3 mr-1" /> Pending
-                              Result
+                              <HelpCircle className="h-3 w-3 mr-1" /> Čekanje
+                              Rezultata
                             </span>
                           )}
                         {item.status === "completed" &&
                           !item.winner &&
                           activeTournament.overallStatus !== "completed" && (
                             <span className="text-xs text-orange-500 flex items-center">
-                              <HelpCircle className="h-3 w-3 mr-1" /> Completed
-                              (No Winner?)
+                              <HelpCircle className="h-3 w-3 mr-1" /> Završeno
+                              (Nema Pobjednika?)
                             </span>
                           )}
                         {item.status === "completed" &&
                           activeTournament.overallStatus === "completed" &&
                           !item.winner && (
                             <span className="text-xs text-muted-foreground flex items-center">
-                              <HelpCircle className="h-3 w-3 mr-1" /> Result N/A
+                              <HelpCircle className="h-3 w-3 mr-1" /> Rezultat
+                              N/A
                             </span>
                           )}
                       </div>
@@ -471,7 +472,7 @@ export default function TournamentPage() {
                       </p>
                       {item.participants && item.participants.length > 0 && (
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Players: {item.participants.join(" vs ")}
+                          Igrači: {item.participants.join(" vs ")}
                         </p>
                       )}
                       {item.notes && (
@@ -484,14 +485,14 @@ export default function TournamentPage() {
                 </div>
               ) : (
                 <p className="text-muted-foreground">
-                  No specific schedule items generated for this tournament.
+                  Nema specifičnog rasporeda generisanog za ovaj turnir.
                 </p>
               )}
             </div>
 
             <div>
               <h4 className="font-semibold text-lg mb-1">
-                Standings Explanation
+                Pozicije / Objašnjenje
               </h4>
               <p className="text-sm text-muted-foreground p-3 bg-secondary/50 rounded-md">
                 {activeTournament.standingsExplanation}
@@ -499,7 +500,7 @@ export default function TournamentPage() {
             </div>
             <div>
               <h4 className="font-semibold text-lg mb-1">
-                Advancement / Winner Determination
+                Napredovanje / Winner Determination
               </h4>
               <p className="text-sm text-muted-foreground p-3 bg-secondary/50 rounded-md">
                 {activeTournament.advancementRules}
@@ -508,7 +509,7 @@ export default function TournamentPage() {
             {activeTournament.tieBreakingRules && (
               <div>
                 <h4 className="font-semibold text-lg mb-1">
-                  Tie-Breaking Rules
+                  Tie-Breaking Pravila
                 </h4>
                 <p className="text-sm text-muted-foreground p-3 bg-secondary/50 rounded-md">
                   {activeTournament.tieBreakingRules}
@@ -532,17 +533,16 @@ export default function TournamentPage() {
         >
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Finalize Tournament?</AlertDialogTitle>
+              <AlertDialogTitle>Završi Turnir?</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to finalize "
-                {activeTournament.tournamentName}"? Once finalized, match
-                results cannot be changed. This action requires all matches to
-                have a winner.
+                Da li ste sigurni da želite završiti "
+                {activeTournament.tournamentName}"? Jednom kad završite turnir,
+                rezultati meča više ne mogu biti izmijenjeni.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel disabled={isLoadingTournament}>
-                Cancel
+                Odustani
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleFinalizeTournament}
@@ -552,7 +552,7 @@ export default function TournamentPage() {
                 {isLoadingTournament ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
-                Finalize
+                Završi
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -568,18 +568,18 @@ export default function TournamentPage() {
         <CardHeader>
           <CardTitle className="text-2xl flex items-center">
             <Trophy className="mr-2 h-6 w-6 text-primary" />
-            AI Tournament Planner
+            AI Planer Turnira
           </CardTitle>
           <CardDescription>
-            Design a custom tournament or league. Let AI create a fair and
-            exciting structure based on your preferences.
+            Dizajniraj osobni turnir ili ligu. Neka umjetna inteligencija kreira
+            fer i uzbudljivu strukturu baziranu na vašim željama.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <Label className="flex items-center mb-1">
-                <Users className="mr-2 h-4 w-4 text-primary/80" /> Player Names
+                <Users className="mr-2 h-4 w-4 text-primary/80" /> Imena Igrača
               </Label>
               <div className="space-y-2">
                 {fields.map((field, index) => (
@@ -631,7 +631,7 @@ export default function TournamentPage() {
                           key={`err-${i}`}
                           className="text-sm text-destructive mt-1"
                         >
-                          Player {i + 1}: {fieldError.message}
+                          Igrač {i + 1}: {fieldError.message}
                         </p>
                       )
                     );
@@ -645,7 +645,7 @@ export default function TournamentPage() {
                   onClick={handleAddPlayer}
                   disabled={isLoadingAi || fields.length >= 16}
                 >
-                  <PlusCircle className="mr-2 h-4 w-4" /> Add Player
+                  <PlusCircle className="mr-2 h-4 w-4" /> Dodaj Igrača
                 </Button>
                 {puckPalInitialized && allAppPlayers.length > 0 && (
                   <Button
@@ -655,18 +655,18 @@ export default function TournamentPage() {
                     onClick={handlePopulateFromExisting}
                     disabled={isLoadingAi || !puckPalInitialized}
                   >
-                    <RefreshCw className="mr-2 h-4 w-4" /> Populate (
+                    <RefreshCw className="mr-2 h-4 w-4" /> Popuni (
                     {allAppPlayers.length})
                   </Button>
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                Min 2 players. Max 16 for this tool.
+                Minimalno 2 igrača. Max 16 za ovaj alat.
               </p>
             </div>
 
             <div>
-              <Label htmlFor="tournamentType">Tournament Type</Label>
+              <Label htmlFor="tournamentType">Tip Turnira</Label>
               <Controller
                 name="tournamentType"
                 control={control}
@@ -686,10 +686,10 @@ export default function TournamentPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="round-robin-league">
-                        Round-Robin League
+                        Round-Robin Liga
                       </SelectItem>
                       <SelectItem value="single-elimination-bracket">
-                        Single-Elimination Bracket
+                        Pojedinačna Eliminacija
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -703,7 +703,7 @@ export default function TournamentPage() {
             </div>
 
             <div>
-              <Label htmlFor="scoringSystem">Scoring System Description</Label>
+              <Label htmlFor="scoringSystem">Opis sistema bodovanja</Label>
               <Controller
                 name="scoringSystem"
                 control={control}
@@ -738,7 +738,7 @@ export default function TournamentPage() {
               ) : (
                 <WandSparkles className="mr-2 h-4 w-4" />
               )}
-              Generate & Save Tournament
+              Kreiraj Turnir
             </Button>
           </form>
         </CardContent>

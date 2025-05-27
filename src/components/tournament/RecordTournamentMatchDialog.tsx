@@ -118,13 +118,13 @@ export function RecordTournamentMatchDialog({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Record Match Result</DialogTitle>
+          <DialogTitle>Snimi Rezultate Meča</DialogTitle>
           <DialogDescription>
-            Select the winner for the match:{" "}
+            Izaberi Pobjednika Meča:{" "}
             <span className="font-semibold">{match.match}</span>
             {match.round && (
               <span className="block text-xs text-muted-foreground">
-                Round: {match.round}
+                Runda: {match.round}
               </span>
             )}
           </DialogDescription>
@@ -132,7 +132,7 @@ export function RecordTournamentMatchDialog({
 
         {dialogParticipants && dialogParticipants.length === 2 ? (
           <div className="grid gap-4 py-4">
-            <p className="text-sm text-muted-foreground">Who won?</p>
+            <p className="text-sm text-muted-foreground">Ko je pobijedio?</p>
             <div className="grid grid-cols-2 gap-2">
               <Button
                 onClick={() => handleSelectWinner(dialogParticipants![0])}
@@ -172,7 +172,7 @@ export function RecordTournamentMatchDialog({
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary" disabled={isLoading}>
-              Cancel
+              Odustani
             </Button>
           </DialogClose>
         </DialogFooter>

@@ -56,7 +56,7 @@ export default function TournamentHistoryPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-muted-foreground">
         <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-        <p className="text-lg">Loading Tournament History...</p>
+        <p className="text-lg">Učitavanje Historije Turnira...</p>
       </div>
     );
   }
@@ -104,11 +104,10 @@ export default function TournamentHistoryPage() {
         <CardHeader>
           <CardTitle className="text-3xl flex items-center">
             <History className="mr-3 h-8 w-8 text-primary" />
-            Completed Tournament History
+            Historija Završenih Turnira
           </CardTitle>
           <CardDescription>
-            Browse through all finalized tournaments. Click on a tournament to
-            view its details.
+            Pretraži sve završene turnire. Klikni na turnir da vidiš detalje.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -130,7 +129,7 @@ export default function TournamentHistoryPage() {
                   </CardTitle>
                   <CardDescription className="text-xs flex items-center mt-1">
                     <CalendarDays className="mr-1.5 h-3.5 w-3.5" />
-                    Finalized:{" "}
+                    Završen:{" "}
                     {tournament.createdAt
                       ? format(tournament.createdAt.toDate(), "PPP")
                       : "N/A"}
@@ -139,7 +138,7 @@ export default function TournamentHistoryPage() {
                 <CardContent className="space-y-2 text-sm flex-grow">
                   <div className="flex items-center">
                     <ListChecks className="mr-2 h-4 w-4 text-muted-foreground" />
-                    Type:{" "}
+                    Tip:{" "}
                     <span className="font-medium ml-1">
                       {tournament.tournamentType === "round-robin-league"
                         ? "Round-Robin"
@@ -148,7 +147,7 @@ export default function TournamentHistoryPage() {
                   </div>
                   <div className="flex items-center">
                     <Users className="mr-2 h-4 w-4 text-muted-foreground" />
-                    Players:{" "}
+                    Igrači:{" "}
                     <span className="font-medium ml-1">
                       {tournament.playerNames.length}
                     </span>
@@ -163,7 +162,7 @@ export default function TournamentHistoryPage() {
                   >
                     {/* The <a> tag is now the child of the button for proper link behavior within the Card structure */}
                     <span>
-                      View Details <ExternalLink className="ml-2 h-4 w-4" />
+                      Pogledaj Detalje <ExternalLink className="ml-2 h-4 w-4" />
                     </span>
                   </Button>
                 </CardFooter>

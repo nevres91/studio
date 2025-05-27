@@ -141,7 +141,7 @@ export default function TournamentDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-muted-foreground">
         <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-        <p className="text-lg">Loading Tournament Details...</p>
+        <p className="text-lg">Učitavanje Detalja Turnira...</p>
       </div>
     );
   }
@@ -151,7 +151,7 @@ export default function TournamentDetailPage() {
       <div className="flex flex-col items-center justify-center min-h-[400px] text-destructive-foreground bg-destructive/10 p-6 rounded-lg">
         <ShieldAlert className="h-12 w-12 mb-4" />
         <h2 className="text-2xl font-semibold mb-2">
-          Error Loading Tournament
+          Greška u učitavanju turnira
         </h2>
         <p className="text-center">{error}</p>
         <Button
@@ -183,28 +183,32 @@ export default function TournamentDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Button variant="outline" onClick={() => router.back()} className="mb-4">
-        <ChevronLeft className="mr-2 h-4 w-4" /> Back to History
+      <Button
+        variant="outline"
+        onClick={() => router.back()}
+        className="mb-1 sm:mb-4"
+      >
+        <ChevronLeft className="mr-2 h-4 w-4" /> Nazad na Historiju
       </Button>
 
       <Card className="shadow-xl">
         <CardHeader>
           <CardTitle className="text-3xl flex items-center">
-            <Trophy className="mr-3 h-8 w-8 text-primary" />
+            <Trophy className="mr-3 h-20 w-20 sm:h-8 sm:w-8 text-primary" />
             {tournament.tournamentName}
           </CardTitle>
           <CardDescription>{tournament.description}</CardDescription>
           <div className="text-sm text-muted-foreground pt-3 space-y-1">
             <div className="flex items-center">
-              <ListChecks className="mr-2 h-4 w-4" /> Type:
+              <ListChecks className="mr-2 h-4 w-4" /> Tip:
               <Badge variant="secondary" className="ml-2">
                 {tournament.tournamentType === "round-robin-league"
-                  ? "Round-Robin League"
-                  : "Single-Elimination Bracket"}
+                  ? "Round-Robin Liga"
+                  : "Pojedinačna Eliminacija"}
               </Badge>
             </div>
             <div className="flex items-center">
-              <Users className="mr-2 h-4 w-4" /> Players:
+              <Users className="mr-2 h-4 w-4" /> Igrači:
               <Badge variant="secondary" className="ml-2">
                 {Array.isArray(tournament.playerNames)
                   ? tournament.playerNames.join(", ")
@@ -212,7 +216,7 @@ export default function TournamentDetailPage() {
               </Badge>
             </div>
             <div className="flex items-center">
-              <CalendarDays className="mr-2 h-4 w-4" /> Created:
+              <CalendarDays className="mr-2 h-4 w-4" /> Kreiran:
               <Badge variant="outline" className="ml-2">
                 {tournament.createdAt
                   ? format(tournament.createdAt.toDate(), "PPP p")
@@ -220,7 +224,7 @@ export default function TournamentDetailPage() {
               </Badge>
             </div>
             <div className="flex items-center">
-              <ListChecks className="mr-2 h-4 w-4" /> Scoring:
+              <ListChecks className="mr-2 h-4 w-4" /> Bodovanje:
               <span className="ml-2 font-mono text-xs p-1 bg-muted rounded">
                 {tournament.scoringSystem}
               </span>
@@ -228,12 +232,12 @@ export default function TournamentDetailPage() {
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-6 mt-4">
+        <CardContent className="space-y-6 mt-4 p-1.5">
           {playerScores.length > 0 && (
             <div>
               <h4 className="font-semibold text-xl mb-3 flex items-center">
                 <Star className="mr-2 h-5 w-5 text-yellow-400" />
-                Standings
+                Pozicije
               </h4>
               <div className="rounded-md border">
                 <Table>
@@ -243,10 +247,10 @@ export default function TournamentDetailPage() {
                         Rank
                       </TableHead>
                       <TableHead>Player</TableHead>
-                      <TableHead className="text-center">Points</TableHead>
+                      <TableHead className="text-center">Poeni</TableHead>
                       <TableHead className="text-center">W</TableHead>
                       <TableHead className="text-center">L</TableHead>
-                      <TableHead className="text-center">Played</TableHead>
+                      <TableHead className="text-center">Odigrano</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -282,7 +286,7 @@ export default function TournamentDetailPage() {
           <div>
             <h4 className="font-semibold text-xl mb-3 flex items-center">
               <ListChecks className="mr-2 h-5 w-5 text-primary/80" />
-              Final Schedule & Results
+              Finalni Raspored i Rezultati
             </h4>
             {tournament.schedule && tournament.schedule.length > 0 ? (
               <div className="space-y-3">
@@ -303,7 +307,7 @@ export default function TournamentDetailPage() {
                             : "text-foreground"
                         }`}
                       >
-                        {item.round ? `Round ${item.round} - ` : ``}
+                        {item.round ? `Runda ${item.round} - ` : ``}
                         {item.match}
                       </p>
                       {item.status === "completed" && item.winner && (
@@ -311,7 +315,7 @@ export default function TournamentDetailPage() {
                           variant="default"
                           className="bg-green-600 hover:bg-green-700 text-white"
                         >
-                          <CheckCircle2 className="h-4 w-4 mr-1.5" /> Winner:{" "}
+                          <CheckCircle2 className="h-4 w-4 mr-1.5" /> Pobjednik:{" "}
                           {item.winner}
                         </Badge>
                       )}
@@ -329,13 +333,13 @@ export default function TournamentDetailPage() {
                           className="border-orange-500 text-orange-600"
                         >
                           <HelpCircle className="h-4 w-4 mr-1.5" /> No Winner
-                          Recorded
+                          Snimljeno
                         </Badge>
                       )}
                     </div>
                     {item.participants && item.participants.length > 0 && (
                       <p className="text-xs text-muted-foreground">
-                        Initial Participants: {item.participants.join(" vs ")}
+                        Učesnici: {item.participants.join(" vs ")}
                       </p>
                     )}
                     {item.notes && (

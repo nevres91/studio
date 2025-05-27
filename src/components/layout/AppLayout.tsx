@@ -31,12 +31,12 @@ import {
 import { usePuckPal } from "@/contexts/PuckPalDataProvider";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: Home },
-  { href: "/matches", label: "Matches", icon: BarChart3 },
-  { href: "/players", label: "Players", icon: Users },
-  { href: "/teams", label: "Teams", icon: Bot },
-  { href: "/tournament", label: "Tournament Planner", icon: Trophy },
-  { href: "/tournament-history", label: "Tournament History", icon: History },
+  { href: "/", label: "Početna", icon: Home },
+  { href: "/matches", label: "Mečevi", icon: BarChart3 },
+  { href: "/players", label: "Igrači", icon: Users },
+  { href: "/teams", label: "Timovi", icon: Bot },
+  { href: "/tournament", label: "Turniri", icon: Trophy },
+  { href: "/tournament-history", label: "Historija Turnira", icon: History },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -48,7 +48,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
         <PuckPalLogo className="w-20 h-20 mb-5 text-primary" />
-        <p>Initializing Layout...</p>
+        <p>Iniciranje Šablona...</p>
       </div>
     );
   }
@@ -64,7 +64,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 PuckPal
               </span>
               <span className="text-xs text-muted-foreground">
-                ClusterPuck99 Stats
+                ClusterPuck99 Statistika
               </span>
             </div>
           </div>
@@ -114,7 +114,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           {/* Add any header content here, e.g., user menu */}
         </header>
         <SidebarInset>
-          <main className="flex-1 p-4 md:p-6 space-y-6">{children}</main>
+          <main className="flex-1 p-1 sm:p-4 md:p-6 space-y-6">{children}</main>
           <footer className="p-6 pt-0 text-xs text-center text-muted-foreground">
             © {new Date().getFullYear()} PuckPal
           </footer>

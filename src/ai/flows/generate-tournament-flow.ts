@@ -20,7 +20,7 @@ const GenerateTournamentInputSchema = z.object({
     ),
   tournamentType: z
     .enum(["round-robin-league", "single-elimination-bracket"])
-    .describe("The desired type of tournament."),
+    .describe("Željeni tip turnira."),
   scoringSystem: z
     .string()
     .min(5)
@@ -147,7 +147,7 @@ The structure must include:
 Ensure the output is logical, fair, and suitable for the number of players provided.
 If generating a bracket for a number of players that is not a power of two (e.g., 3, 5, 6, 7 players), clearly explain how byes are assigned in the first round.
 The description should be engaging but CONCISE. The schedule must be easy to follow. Standings and advancement rules must be unambiguous.
-Every match in the schedule array MUST have its 'id' (placeholder), 'status' ("pending"), and 'match' description. For direct matchups with known players, the 'participants' array MUST be populated with their names.
+Every match in the schedule array MUST have its 'id' (placeholder), 'status' ("pending"), and 'match' description. For direct matchups with known players, the 'participants' array MUST be populated with their names. Do it all in bosnian language.
 `,
 });
 
