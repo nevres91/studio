@@ -40,15 +40,15 @@ const playerGoalSchema = z.object({
 const recordMatchSchema = z
   .object({
     date: z.date(),
-    selectedMatchupId: z.string().min(1, "Please select a matchup."),
+    selectedMatchupId: z.string().min(1, "Izaberi par"),
     teamAScore: z
       .number()
-      .min(0, "Score must be 0 or greater.")
+      .min(0, "Skor mora biti 0 ili veći")
       .max(MAX_SCORE, `Score cannot exceed ${MAX_SCORE}.`),
     teamBScore: z
       .number()
-      .min(0, "Score must be 0 or greater.")
-      .max(MAX_SCORE, `Score cannot exceed ${MAX_SCORE}.`),
+      .min(0, "Skor mora biti 0 ili veći")
+      .max(MAX_SCORE, `Skor ne može preći ${MAX_SCORE}.`),
     playerGoals: z.array(playerGoalSchema),
   })
   .refine(
@@ -69,7 +69,7 @@ const recordMatchSchema = z
       return true; // If no team is at MAX_SCORE yet, this rule passes.
     },
     {
-      message: `Match scores cannot be a draw if one team has reached ${MAX_SCORE}.`,
+      message: `Rezultat meča ne smije biti neriješeno ako jedan od timova dostigne skor ${MAX_SCORE}.`,
       path: ["root"],
     }
   );
@@ -150,7 +150,7 @@ export function RecordMatchForm() {
     if (!selectedMatchup) {
       toast({
         title: "Error",
-        description: "No matchup selected.",
+        description: "Nema odabranih parova.",
         variant: "destructive",
       });
       return;
@@ -166,8 +166,8 @@ export function RecordMatchForm() {
     );
 
     toast({
-      title: "Match Saved!",
-      description: `Match on ${format(data.date, "PPP")} has been saved.`,
+      title: "Meč Snimljen!",
+      description: `Meč na dan ${format(data.date, "PPP")} je snimljen.`,
     });
     reset();
     setSelectedMatchup(null);
@@ -179,9 +179,8 @@ export function RecordMatchForm() {
       <div className="flex items-center gap-2 p-4 border border-yellow-500/50 bg-yellow-500/10 rounded-md text-yellow-700 dark:text-yellow-300">
         <AlertCircle className="h-5 w-5" />
         <p>
-          Not enough players to form standard 2v3 teams. Please ensure there are
-          5 players available. Nema dovoljno igrača da se osnuju 2 vs 3 timovi.
-          Molim osigurajte da ima 5 dostupnih igrača.
+          Nema dovoljno igrača da se osnuju 2 vs 3 timovi. Molim osigurajte da
+          ima 5 dostupnih igrača.
         </p>
       </div>
     );
@@ -280,15 +279,6 @@ export function RecordMatchForm() {
                   name="teamAScore"
                   control={control}
                   render={({ field }) => (
-                    // <Input
-                    //   type="number"
-                    //   min={0}
-                    //   max={MAX_SCORE}
-                    //   {...field}
-                    //   onChange={(e) =>
-                    //     field.onChange(parseInt(e.target.value) || 0)
-                    //   }
-                    // />
                     <NumberInput
                       value={field.value}
                       onChange={field.onChange}
@@ -312,15 +302,6 @@ export function RecordMatchForm() {
                   name="teamBScore"
                   control={control}
                   render={({ field }) => (
-                    //     <Input
-                    //       type="number"
-                    //       min={0}
-                    //       max={MAX_SCORE}
-                    //       {...field}
-                    //       onChange={(e) =>
-                    //         field.onChange(parseInt(e.target.value) || 0)
-                    //       }
-                    //     />
                     <NumberInput
                       value={field.value}
                       onChange={field.onChange}

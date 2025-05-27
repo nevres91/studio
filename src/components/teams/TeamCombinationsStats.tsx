@@ -204,7 +204,7 @@ export function TeamCombinationsStats() {
                   variant={
                     stat.teamBWinLossRatio >= 0.5 ? "default" : "destructive"
                   }
-                  className="bg-accent/10 text-accent-foreground hover:bg-accent/20"
+                  className="bg-accent/40 text-accent-foreground hover:bg-accent/60"
                 >
                   {stat.teamBWinLossRatio.toFixed(2)}
                 </Badge>

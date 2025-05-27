@@ -92,9 +92,9 @@ export function MatchHistory() {
     try {
       await deleteMatch(matchToDeleteId);
       toast({
-        title: "Match Deleted",
+        title: "Meč Izbrisan",
         description:
-          "The match has been successfully deleted and player stats updated.",
+          "Meč je uspješno izbrisan i statistika igrača je ažurirana.",
       });
       setMatchToDeleteId(null); // Close dialog by resetting the ID
       // If current page becomes empty after deletion, go to previous page
@@ -290,7 +290,7 @@ export function MatchHistory() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Da li ste sigurni?</AlertDialogTitle>
             <AlertDialogDescription>
               Ovo će zauvijek izbrisati odabrani meč i preračunati statistiku
               igrača na osnovu preostalih mečeva.

@@ -40,7 +40,7 @@ export default function TeamsPage() {
         </Card>
       </TabsContent>
       <TabsContent value="stats">
-        <Card className="shadow-lg">
+        <Card className="shadow-lg min-w-[800px]">
           <CardHeader>
             <CardTitle className="text-2xl">
               Statistika Kombinacije Timova
