@@ -1,9 +1,9 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import type { Player } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function generateId(): string {
@@ -33,24 +33,45 @@ export function getCombinations<T>(array: T[], size: number): T[][] {
 }
 
 // Generates 2v3 matchups from a list of players
-export function generate2v3Matchups(players: Player[]): { teamA: Player[], teamB: Player[] }[] {
+export function generate2v3Matchups(
+  players: Player[]
+): { teamA: Player[]; teamB: Player[] }[] {
   if (players.length !== 5) {
     // This function is specifically for 5 players resulting in 2v3
     // console.warn("generate2v3Matchups expects exactly 5 players.");
     return []; // Or handle differently
   }
 
-  const matchups: { teamA: Player[], teamB: Player[] }[] = [];
+  const matchups: { teamA: Player[]; teamB: Player[] }[] = [];
   const teamsOfTwo = getCombinations(players, 2);
 
   for (const teamA of teamsOfTwo) {
-    const teamB = players.filter(p => !teamA.find(pA => pA.id === p.id));
+    const teamB = players.filter((p) => !teamA.find((pA) => pA.id === p.id));
     matchups.push({ teamA, teamB });
   }
   return matchups;
 }
 
-export function calculateWinLossRatio(wins: number, gamesPlayed: number): number {
+export function calculateWinLossRatio(
+  wins: number,
+  gamesPlayed: number
+): number {
   if (gamesPlayed === 0) return 0;
   return parseFloat((wins / gamesPlayed).toFixed(2));
+}
+
+export function promiseWithTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  timeoutError = new Error("Operation timed out")
+): Promise<T> {
+  let timer: NodeJS.Timeout;
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      timer = setTimeout(() => reject(timeoutError), ms);
+    }),
+  ]).finally(() => {
+    clearTimeout(timer);
+  });
 }

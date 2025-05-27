@@ -1,101 +1,125 @@
 "use client";
 
-import React from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PuckPalLogo } from "./PuckPalLogo";
 import {
-  Sidebar,
   SidebarProvider,
+  Sidebar,
   SidebarHeader,
-  SidebarTrigger,
   SidebarContent,
+  SidebarFooter,
+  SidebarTrigger,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuBadge,
   SidebarInset,
-  SidebarFooter,
-} from "../ui/sidebar";
-import { Button } from "../ui/button";
-import { Home, Users, Swords, UsersRound, Settings, Bot } from "lucide-react"; // Added Bot for AI
-import { PuckPalLogo } from "./PuckPalLogo";
-import { AvatarFallback, Avatar, AvatarImage } from "../ui/avatar";
-import avatarImage from "../../lib/avatar.jpg";
-import puckImg from "../../lib/puck2.png";
+} from "@/components/ui/sidebar"; // Assuming you have these from ShadCN or similar
+import { Button } from "@/components/ui/button";
+import {
+  Home,
+  BarChart3,
+  Users,
+  Bot,
+  Trophy,
+  History,
+  Settings,
+  LogOut,
+} from "lucide-react";
+import { usePuckPal } from "@/contexts/PuckPalDataProvider";
 
 const navItems = [
-  { href: "/", label: "Početna", icon: Home },
-  { href: "/players", label: "Igrači", icon: Users },
-  { href: "/matches", label: "Mečevi", icon: Swords },
-  { href: "/teams", label: "Timovi", icon: Bot },
+  { href: "/", label: "Dashboard", icon: Home },
+  { href: "/matches", label: "Matches", icon: BarChart3 },
+  { href: "/players", label: "Players", icon: Users },
+  { href: "/teams", label: "Teams", icon: Bot },
+  { href: "/tournament", label: "Tournament Planner", icon: Trophy },
+  { href: "/tournament-history", label: "Tournament History", icon: History },
 ];
 
-export function AppLayout({ children }: { children: React.ReactNode }) {
+export function AppLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { isInitialized } = usePuckPal(); // Use this to potentially delay sidebar rendering if needed
+
+  if (!isInitialized) {
+    // This is a fallback, PuckPalDataProvider should handle the main loading screen
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
+        <PuckPalLogo className="w-20 h-20 mb-5 text-primary" />
+        <p>Initializing Layout...</p>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider defaultOpen>
-      <Sidebar className="border-r" collapsible="icon">
+      <Sidebar collapsible="icon" className="border-r">
         <SidebarHeader className="p-4">
-          <Link href="/" className="flex items-center gap-2">
-            <PuckPalLogo className="w-8 h-8 text-primary" />
-            <h1 className="text-xl font-semibold text-primary group-data-[collapsible=icon]:hidden">
-              PuckPal
-            </h1>
-          </Link>
+          <div className="flex items-center gap-2">
+            <PuckPalLogo className="w-10 h-10 text-primary" />
+            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
+              <span className="text-lg font-semibold tracking-tight text-foreground">
+                PuckPal
+              </span>
+              <span className="text-xs text-muted-foreground">
+                ClusterPuck99 Stats
+              </span>
+            </div>
+          </div>
         </SidebarHeader>
         <SidebarContent className="p-2">
           <SidebarMenu>
             {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <Link href={item.href} legacyBehavior passHref>
+              <SidebarMenuItem key={item.label}>
+                <Link href={item.href} passHref legacyBehavior>
                   <SidebarMenuButton
                     isActive={pathname === item.href}
                     tooltip={{
                       children: item.label,
                       side: "right",
-                      className: "ml-2",
+                      align: "center",
                     }}
                   >
-                    <item.icon />
+                    <item.icon className="h-5 w-5" />
                     <span>{item.label}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
-          <div>
-            <img src={puckImg.src} alt="" />
-          </div>
         </SidebarContent>
-        <SidebarFooter className="p-4 border-t">
-          {/* User Avatar or Settings */}
-          <div className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-            <Avatar className="h-8 w-8">
-              <AvatarImage
-                src={avatarImage.src}
-                alt="User"
-                data-ai-hint="avatar person"
-              />
-              <AvatarFallback>PP</AvatarFallback>
-            </Avatar>
-            <div className="group-data-[collapsible=icon]:hidden">
-              <p className="text-sm font-medium">PuckPal</p>
-              <p className="text-xs text-muted-foreground">Neka Igra Počne</p>
-            </div>
-          </div>
+        <SidebarFooter className="p-2">
+          {/* Example Footer Items */}
+          {/* <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip={{ children: "Settings", side: "right", align: "center" }}>
+                <Settings className="h-5 w-5" />
+                <span>Settings</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip={{ children: "Logout", side: "right", align: "center" }}>
+                <LogOut className="h-5 w-5" />
+                <span>Logout</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu> */}
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset>
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background/80 px-6 backdrop-blur-sm">
-          <SidebarTrigger className="md:hidden" /> {/* Mobile toggle */}
-          <h1 className="text-lg font-semibold md:text-xl">
-            {navItems.find((item) => pathname === item.href)?.label ||
-              "PuckPal"}
-          </h1>
-          {/* Add any header actions here, e.g., theme toggle, notifications */}
+      <div className="flex flex-col w-full md:group-data-[collapsible=offcanvas]:pl-0 md:group-data-[collapsible=icon]:pl-[calc(var(--sidebar-width-icon)_+_1px)] transition-[padding] ease-linear">
+        <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:justify-end">
+          <SidebarTrigger className="md:hidden" />
+          {/* Add any header content here, e.g., user menu */}
         </header>
-        <main className="flex-1 p-2  sm:p-6 overflow-auto">{children}</main>
-      </SidebarInset>
+        <SidebarInset>
+          <main className="flex-1 p-4 md:p-6 space-y-6">{children}</main>
+          <footer className="p-6 pt-0 text-xs text-center text-muted-foreground">
+            © {new Date().getFullYear()} PuckPal
+          </footer>
+        </SidebarInset>
+      </div>
     </SidebarProvider>
   );
 }

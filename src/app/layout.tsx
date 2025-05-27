@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // Changed to Inter as Geist was causing issues.
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { AppLayout } from "@/components/layout/AppLayout";
-import { PuckPalDataProvider } from "@/contexts/PuckPalDataProvider";
-import { Toaster } from "@/components/ui/toaster";
+import { ClientWrapper } from "../components/ClientWrapper"; // Import the dedicated client component
 
-// Using Inter font as a more standard choice for now
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans", // Using a more generic variable name
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -23,12 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* Apply the font variable to the body or html tag */}
       <body className={`${inter.variable} font-sans antialiased`}>
-        <PuckPalDataProvider>
-          <AppLayout>{children}</AppLayout>
-          <Toaster />
-        </PuckPalDataProvider>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );
