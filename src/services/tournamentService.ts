@@ -14,6 +14,7 @@ import {
   updateDoc,
   getDoc,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 import type {
   StoredTournament,
@@ -510,5 +511,45 @@ export async function getCompletedTournaments(): Promise<StoredTournament[]> {
     }
 
     throw new Error(detailedMessage);
+  }
+}
+
+export async function deleteTournament(tournamentId: string): Promise<void> {
+  if (!db) {
+    console.error(
+      "[TournamentService] Firestore 'db' instance is not available."
+    );
+    throw new Error("Firestore not initialized");
+  }
+  if (!tournamentId) {
+    console.error(
+      "[TournamentService] deleteTournament called with invalid ID."
+    );
+    throw new Error("Invalid tournament ID provided for deletion.");
+  }
+
+  try {
+    const tournamentDocRef = doc(db, "tournaments", tournamentId);
+    await promiseWithTimeout(
+      deleteDoc(tournamentDocRef),
+      FIRESTORE_TIMEOUT_MS,
+      new Error(`Timeout deleting tournament ${tournamentId} from Firestore`)
+    );
+    console.log(
+      `[TournamentService] Tournament ${tournamentId} deleted from Firestore.`
+    );
+  } catch (error) {
+    console.error(
+      `[TournamentService] Error deleting tournament ${tournamentId}:`,
+      error
+    );
+    if (error instanceof Error) {
+      throw new Error(
+        `Failed to delete tournament ${tournamentId}: ${error.message}`
+      );
+    }
+    throw new Error(
+      `Failed to delete tournament ${tournamentId} due to an unknown error.`
+    );
   }
 }

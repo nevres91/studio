@@ -112,6 +112,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:justify-end">
           <SidebarTrigger className="md:hidden" />
           {/* Add any header content here, e.g., user menu */}
+          <div className="w-full text-center font-bold text-3xl l text-blue-500 tracking-widest">
+            PuckPal
+          </div>
         </header>
         <SidebarInset>
           <main className="flex-1 p-1 sm:p-4 md:p-6 space-y-6">{children}</main>
