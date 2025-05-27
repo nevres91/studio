@@ -83,7 +83,7 @@ const TournamentPageFormSchema = z.object({
   }),
 });
 
-type TournamentFormInputs = GenerateTournamentInput;
+// Type for form inputs will be inferred from TournamentPageFormSchema by useForm
 
 export default function TournamentPage() {
   const { players: allAppPlayers, isInitialized: puckPalInitialized } =
@@ -105,7 +105,7 @@ export default function TournamentPage() {
     handleSubmit,
     reset,
     formState: { errors: formErrors },
-  } = useForm<TournamentFormInputs>({
+  } = useForm<z.infer<typeof TournamentPageFormSchema>>({
     resolver: zodResolver(TournamentPageFormSchema),
     defaultValues: {
       playerNames: [],
@@ -114,9 +114,10 @@ export default function TournamentPage() {
     },
   });
 
+  // @ts-ignore
   const { fields, append, remove, replace } = useFieldArray({
     control,
-    name: "playerNames" as any,
+    name: "playerNames",
   });
 
   const fetchLatestTournament = useCallback(async () => {
@@ -193,9 +194,11 @@ export default function TournamentPage() {
     });
   };
 
-  const onSubmit = async (data: TournamentFormInputs) => {
+  const onSubmit = async (data: z.infer<typeof TournamentPageFormSchema>) => {
     setIsLoadingAi(true);
     try {
+      // Data structure from form (z.infer<typeof TournamentPageFormSchema>)
+      // is compatible with GenerateTournamentInput for these fields.
       const aiResult = await generateTournamentStructure(data);
       const newlyCreatedTournament = await saveTournament(aiResult, data);
 
@@ -303,7 +306,7 @@ export default function TournamentPage() {
       return false;
     }
     return activeTournament.schedule.every(
-      (match: any) => match.status === "completed" && !!match.winner
+      (match) => match.status === "completed" && !!match.winner
     );
   }, [activeTournament]);
 
@@ -411,7 +414,7 @@ export default function TournamentPage() {
               {activeTournament.schedule &&
               activeTournament.schedule.length > 0 ? (
                 <div className="space-y-2">
-                  {activeTournament.schedule.map((item: any) => (
+                  {activeTournament.schedule.map((item) => (
                     <Button
                       key={item.id}
                       variant={
@@ -619,7 +622,8 @@ export default function TournamentPage() {
                     </p>
                   )}
                 {Array.isArray(formErrors.playerNames) &&
-                  formErrors.playerNames.map((err: any, i: any) => {
+                  formErrors.playerNames.map((err, i) => {
+                    // Assuming err can be an object with a message property, or undefined
                     const fieldError = err as { message?: string } | undefined;
                     return (
                       fieldError?.message && (
