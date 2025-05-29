@@ -136,9 +136,7 @@ export default function TournamentHistoryPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-muted-foreground">
         <History className="h-16 w-16 mb-6" />
-        <h2 className="text-2xl font-semibold mb-2">
-          No Completed Tournaments Yet
-        </h2>
+        <h2 className="text-2xl font-semibold mb-2">Nema Završenih Turnira</h2>
         <p className="text-center">
           Završite turnir na stranici 'Turniri' i pojavit će se ovdje.
         </p>

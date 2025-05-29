@@ -16,7 +16,14 @@ import {
   TrendingUp,
   TrendingDown,
   Gamepad2,
-} from "lucide-react";
+  ShieldOff,
+  Zap,
+  Goal,
+  Minus,
+  Plus,
+  GitCompareArrows,
+  Star,
+} from "lucide-react"; // Added icons
 import { Badge } from "@/components/ui/badge";
 
 interface PlayerStatsDisplayProps {
@@ -25,34 +32,79 @@ interface PlayerStatsDisplayProps {
 
 export function PlayerStatsDisplay({ players }: PlayerStatsDisplayProps) {
   const sortedPlayers = [...players].sort(
-    (a, b) => b.winLossRatio - a.winLossRatio || b.totalGoals - a.totalGoals
+    (a, b) =>
+      b.totalPoints - a.totalPoints ||
+      b.winLossRatio - a.winLossRatio ||
+      b.totalGoals - a.totalGoals ||
+      b.teamGoalDifference - a.teamGoalDifference
   );
+
+  const getGoalDifferenceColor = (diff: number) => {
+    if (diff > 0) return "text-green-600 dark:text-green-400";
+    if (diff < 0) return "text-red-600 dark:text-red-400";
+    return "text-muted-foreground";
+  };
 
   return (
     <div className="overflow-x-auto rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[80px]">Rank</TableHead>
-            <TableHead>Igrač</TableHead>
+            <TableHead className="w-[60px] text-center">Rank</TableHead>
+            <TableHead>Player</TableHead>
             <TableHead className="text-center">
               <div className="flex items-center justify-center gap-1">
-                <Gamepad2 className="h-4 w-4" /> Mečevi
+                <Gamepad2 className="h-4 w-4" /> GP
               </div>
             </TableHead>
             <TableHead className="text-center">
               <div className="flex items-center justify-center gap-1">
-                <Award className="h-4 w-4" /> Pobjede
+                <Award className="h-4 w-4" /> W
               </div>
             </TableHead>
             <TableHead className="text-center">
               <div className="flex items-center justify-center gap-1">
-                <TrendingDown className="h-4 w-4" /> Gubitci
+                <TrendingDown className="h-4 w-4" /> L
               </div>
             </TableHead>
             <TableHead className="text-center">
               <div className="flex items-center justify-center gap-1">
-                <Target className="h-4 w-4" /> Golovi
+                <Star className="h-4 w-4" /> Pts
+              </div>
+            </TableHead>
+            <TableHead className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <Goal className="h-4 w-4" /> Goals
+              </div>
+            </TableHead>
+            <TableHead className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <ShieldOff className="h-4 w-4" /> AutoG
+              </div>
+            </TableHead>
+            <TableHead className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <Zap className="h-4 w-4" /> Checks
+              </div>
+            </TableHead>
+            <TableHead className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <TrendingUp className="h-4 w-4" /> W/L
+              </div>
+            </TableHead>
+            <TableHead className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <Plus className="h-4 w-4" /> Team GF
+              </div>
+            </TableHead>
+            <TableHead className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <Minus className="h-4 w-4" /> Team GA
+              </div>
+            </TableHead>
+            <TableHead className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <GitCompareArrows className="h-4 w-4" /> Team GD
               </div>
             </TableHead>
           </TableRow>
@@ -95,7 +147,41 @@ export function PlayerStatsDisplay({ players }: PlayerStatsDisplayProps) {
               <TableCell className="text-center text-red-600 dark:text-red-400">
                 {player.losses}
               </TableCell>
+              <TableCell className="text-center font-semibold">
+                {player.totalPoints}
+              </TableCell>
               <TableCell className="text-center">{player.totalGoals}</TableCell>
+              <TableCell className="text-center">
+                {player.totalAutoGoals}
+              </TableCell>
+              <TableCell className="text-center">
+                {player.totalChecks}
+              </TableCell>
+              <TableCell className="text-center">
+                <Badge
+                  variant={
+                    player.winLossRatio >= 0.5 ? "default" : "destructive"
+                  }
+                  className="bg-primary/10 text-primary hover:bg-primary/20"
+                >
+                  {player.winLossRatio.toFixed(2)}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-center">
+                {player.teamGoalsScored}
+              </TableCell>
+              <TableCell className="text-center">
+                {player.teamGoalsConceded}
+              </TableCell>
+              <TableCell
+                className={`text-center font-semibold ${getGoalDifferenceColor(
+                  player.teamGoalDifference
+                )}`}
+              >
+                {player.teamGoalDifference > 0
+                  ? `+${player.teamGoalDifference}`
+                  : player.teamGoalDifference}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

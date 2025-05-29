@@ -1,17 +1,25 @@
-
 export interface Player {
   id: string;
   name: string;
   totalGoals: number;
+  totalAutoGoals: number; // New: Total own goals scored by this player
+  totalChecks: number; // New: Total checks made by this player
   wins: number;
   losses: number;
+  totalPoints: number; // New: Calculated from wins and losses
   gamesPlayed: number;
-  winLossRatio: number; // Added for direct use by AI and display
+  winLossRatio: number;
+  teamGoalsScored: number; // New: Total goals scored by teams this player was on
+  teamGoalsConceded: number; // New: Total goals conceded by teams this player was on
+  teamGoalDifference: number; // New: teamGoalsScored - teamGoalsConceded
 }
 
-export interface PlayerGoal {
+// Renamed from PlayerGoal and expanded
+export interface PlayerMatchStats {
   playerId: string;
   goals: number;
+  autoGoals: number; // New: Own goals scored in this match
+  checks: number; // New: Checks made in this match
 }
 
 export interface MatchTeamDetails {
@@ -24,7 +32,7 @@ export interface Match {
   date: string; // ISO string
   teamA: MatchTeamDetails;
   teamB: MatchTeamDetails;
-  playerGoals: PlayerGoal[];
+  playerStats: PlayerMatchStats[]; // Changed from playerGoals
   winningTeamIds: string[]; // Store IDs of players in the winning team
 }
 
@@ -41,6 +49,6 @@ export interface TeamCombination {
 
 export interface GeneratedMatchup {
   id: string; // Unique ID for this matchup configuration
-  teamA: { name: string, playerIds: string[] };
-  teamB: { name: string, playerIds: string[] };
+  teamA: { name: string; playerIds: string[] };
+  teamB: { name: string; playerIds: string[] };
 }
